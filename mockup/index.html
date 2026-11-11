@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Padharo Mewar (motion prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Outfit:wght@400;500;600&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#14261C; --green2:#1E3A2B; --ivory:#F7F0E2; --ink:#14261C; --muted:#44554B;
+  --red:#A92C17; --gold:#F2C14E; --on-dark:#F7F0E2; --on-dark-2:#DDD7C8;
+  --out:cubic-bezier(.23,1,.32,1);
+  --jh:polygon(0% 100%,0% 34%,0% 30.2%,0% 26.4%,.4% 24.8%,2.4% 23.5%,2.1% 21.3%,2.3% 19.2%,3.1% 17.3%,4.7% 15.8%,7% 14.7%,9.5% 14%,10.1% 11.7%,11.2% 9.6%,12.8% 7.9%,15% 6.9%,17.7% 6.5%,20.6% 6.5%,22.1% 4.3%,23.9% 2.4%,26.1% 1.2%,28.7% .7%,31.6% .9%,34.5% 1.7%,36.7% 2.5%,40% 2.6%,44% 1.6%,47.5% .6%,50% 0%,52.5% .6%,56% 1.6%,60% 2.6%,63.3% 2.5%,65.5% 1.7%,68.4% .9%,71.3% .7%,73.9% 1.2%,76.1% 2.4%,77.9% 4.3%,79.4% 6.5%,82.3% 6.5%,85% 6.9%,87.2% 7.9%,88.8% 9.6%,89.9% 11.7%,90.5% 14%,93% 14.7%,95.3% 15.8%,96.9% 17.3%,97.7% 19.2%,97.9% 21.3%,97.6% 23.5%,99.6% 24.8%,100% 26.4%,100% 30.2%,100% 34%,100% 100%);
+}
+*{box-sizing:border-box}
+html{background:var(--green)}
+body{margin:0;font:400 19px/1.5 Outfit,sans-serif;color:var(--ink);background:var(--ivory);overflow-x:hidden}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{color:inherit}
+h1,h2,h3,p,figure,blockquote{margin:0}
+.serif{font-family:Fraunces,serif;font-weight:500;letter-spacing:-.02em;line-height:1.02}
+.h2{font-size:clamp(46px,7vw,112px)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* Content notes: off by default, switch on from the nav */
+.note{display:none;background:var(--gold);color:#14261C;font:500 15px/1.45 Outfit,sans-serif;letter-spacing:0;padding:10px 14px;max-width:520px;margin-top:14px;border-radius:6px}
+body.notes .note{display:block}
+
+/* Loader */
+#loader{position:fixed;inset:0;z-index:30;background:var(--green);color:var(--ivory);display:none;place-items:center;font:400 clamp(56px,12vw,150px)/1.2 "Tiro Devanagari Hindi",serif}
+.js #loader{display:grid}
+
+/* Nav */
+.nav{position:fixed;z-index:20;top:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:6px;border-radius:99px;background:rgba(20,38,28,.82);backdrop-filter:blur(14px);color:var(--on-dark);max-width:calc(100vw - 24px);white-space:nowrap;font-weight:500;font-size:16px}
+.nav a,.nav button{min-height:44px;display:inline-flex;align-items:center;padding:0 16px;border-radius:99px;text-decoration:none;color:inherit;background:none;border:0;font:inherit;cursor:pointer;transition:background-color .2s,transform .16s var(--out)}
+.nav button:active,.nav a:active{transform:scale(.97)}
+.nav .brand{font-family:Fraunces,serif;font-size:19px}
+@media (hover:hover){.nav a:hover,.nav button:hover{background:rgba(247,240,226,.16)}}
+body.notes #noteBtn{background:var(--gold);color:#14261C}
+
+/* Hero */
+.hero{position:relative;height:100vh;height:100dvh;background:var(--green);overflow:hidden;color:var(--on-dark)}
+.arch{position:absolute;inset:0;clip-path:var(--jh);will-change:transform;transform-origin:50% 55%}
+.arch img{will-change:transform}
+.ttl{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 3vw;font-size:14vw;pointer-events:none;line-height:1}
+.ttl span{display:block}
+.hero-end{position:absolute;left:0;right:0;bottom:0;padding:18vh 5vw 44px;background:linear-gradient(transparent,rgba(10,20,14,.86) 58%);display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.hero-end p{font-size:clamp(32px,4.6vw,68px);max-width:15em}
+.pill{display:inline-flex;align-items:center;gap:14px;min-height:56px;padding:6px 8px 6px 26px;border-radius:99px;background:var(--ivory);color:var(--ink);font-weight:600;text-decoration:none;transition:transform .16s var(--out)}
+.pill i{width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--ivory);display:grid;place-items:center;font-style:normal;transition:transform .3s var(--out)}
+.pill:active{transform:scale(.97)}
+@media (hover:hover){.pill:hover i{transform:translate(3px,-2px) scale(1.06)}}
+
+/* Word reveal */
+.say{background:var(--green);color:var(--on-dark);padding:22vh 6vw}
+.say p.big{font-size:clamp(40px,6.4vw,104px);max-width:15em}
+
+/* Horizontal gallery */
+.h-wrap{background:var(--ivory);overflow:hidden}
+.h-head{padding:72px 5vw 0}
+.h-track{display:flex;gap:5vw;align-items:center;padding:40px 5vw 56px;width:max-content}
+.panel{flex:none;display:block;text-decoration:none;color:var(--ink)}
+.panel .pic{overflow:hidden;background:var(--green2)}
+.panel .pic img{transition:transform .9s var(--out)}
+.panel.a .pic{width:46vw;height:62vh}
+.panel.b .pic{width:27vw;height:66vh;clip-path:var(--jh)}
+.panel.c .pic{width:38vw;height:46vh}
+.panel h3{font-size:clamp(38px,4.4vw,70px);margin-top:16px}
+.panel p{font-size:20px;color:var(--muted)}
+@media (hover:hover){.panel:hover .pic img{transform:scale(1.05)}}
+
+/* Mood list */
+.moods{background:var(--green);color:var(--on-dark);padding:18vh 5vw;position:relative}
+.moods ul{list-style:none;margin:48px 0 0;padding:0}
+.moods li{border-top:1px solid rgba(247,240,226,.3)}
+.moods li:last-child{border-bottom:1px solid rgba(247,240,226,.3)}
+.moods a{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;padding:20px 0;text-decoration:none;transition:transform .5s var(--out)}
+.moods .w{font-size:clamp(42px,7.4vw,118px)}
+.moods small{font-size:20px;color:var(--on-dark-2)}
+.moods .thumb{display:none}
+@media (hover:hover){.moods a:hover{transform:translateX(28px)}}
+#float{position:fixed;left:0;top:0;width:330px;height:420px;overflow:hidden;pointer-events:none;z-index:10;opacity:0;clip-path:var(--jh)}
+#float img{position:absolute;inset:0;opacity:0;transition:opacity .25s}
+#float img.on{opacity:1}
+
+/* Zoom scene */
+.zoom{position:relative;height:100vh;height:100dvh;overflow:hidden;background:var(--ivory)}
+.z{position:absolute;overflow:hidden}
+.z1{left:4%;top:9%;width:22%;height:34%}.z2{right:5%;top:7%;width:20%;height:40%}
+.z3{left:8%;bottom:7%;width:24%;height:32%}.z4{right:8%;bottom:6%;width:23%;height:34%}
+.z0{inset:0;will-change:transform}
+.z0-cap{position:absolute;left:0;right:0;bottom:0;padding:16vh 5vw 44px;background:linear-gradient(transparent,rgba(10,20,14,.88) 60%);color:var(--on-dark)}
+.z0-cap p{font-size:clamp(38px,6vw,96px);max-width:14em}
+
+/* Stacked trips */
+.trips{padding:18vh 5vw 8vh}
+.card{position:sticky;top:12vh;height:76vh;display:grid;grid-template-columns:5fr 7fr;margin-top:32px;overflow:hidden;border-radius:28px;background:var(--green);color:var(--on-dark);will-change:transform;transform-origin:50% 0}
+.card:nth-child(3){background:var(--red);color:#FFF8EC}
+.card:nth-child(4){background:#23408F;color:#fff}
+.card .tx{padding:44px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.card .n{font-size:clamp(100px,14vw,210px);line-height:.9}
+.card h3{font-size:clamp(32px,3.4vw,54px)}
+.card p{font-size:20px;margin-top:10px}
+
+/* Voices */
+.voices{background:var(--ivory);padding:12vh 0;overflow:hidden}
+.voices .h2{padding:0 5vw}
+.vtrack{display:flex;width:max-content;margin-top:48px}
+.v{flex:none;width:430px;margin-right:28px;background:#fff;border-radius:22px;padding:12px;box-shadow:0 22px 44px -26px rgba(20,38,28,.35)}
+.v .ph{height:290px;border-radius:14px;overflow:hidden}
+.v q{display:block;font:500 28px/1.2 Fraunces,serif;margin:18px 10px 8px;quotes:none}
+.v span{display:block;margin:0 10px 12px;color:var(--muted);font-size:17px}
+
+/* CTA */
+.cta{background:var(--red);color:#FFF8EC;padding:20vh 5vw 12vh}
+.cta .xl{font-size:clamp(60px,12vw,200px);line-height:.95}
+.cta .pill{margin-top:44px}
+footer{background:var(--green);color:var(--on-dark-2);padding:40px 5vw;font-size:16px}
+.line{overflow:hidden;display:block}
+.line>span{display:block}
+
+@media (max-width:768px){
+  body{font-size:18px}
+  .nav{font-size:15px}.nav a.hide,.nav .hide{display:none}
+  .ttl{justify-content:center;align-items:flex-start;padding-top:12vh;font-size:27vw;gap:0}
+  .arch{transform-origin:50% 70%}
+  .h-track{overflow-x:auto;width:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;gap:16px;scrollbar-width:none}
+  .panel{scroll-snap-align:center}
+  .panel.a .pic,.panel.b .pic,.panel.c .pic{width:80vw;height:60vh}
+  .z1,.z2,.z3,.z4{display:none}
+  .moods .thumb{display:block;width:100%;height:240px;overflow:hidden;margin-top:12px;border-radius:12px}
+  #float{display:none}
+  .card{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:80vh;top:9vh}
+  .card .tx{padding:26px}.card .n{font-size:88px}
+  .v{width:84vw}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+<div id="loader" aria-hidden="true"><span>मेवाड़</span></div>
+
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="#top">Padharo Mewar</a>
+  <a class="hide" href="#places">Places</a>
+  <a class="hide" href="#trips">Trips</a>
+  <button id="noteBtn" type="button" aria-pressed="false">Content notes</button>
+</nav>
+
+<main>
+<section class="hero" id="top">
+  <div class="arch"><img src="img/pichola.jpg" alt="Sunset over Lake Pichola, Udaipur, with the Lake Palace on the water"></div>
+  <h1 class="ttl serif" aria-label="Mewar"><span id="tA">Me</span><span id="tB">war</span></h1>
+  <div class="hero-end">
+    <div>
+      <p class="serif">Lakes that hold the sunset. Forts that hold the hills.</p>
+      <div class="note">INTENT: First feeling. Replace with your own line of 12 words at most. Make people picture being here; no facts, no selling.</div>
+    </div>
+    <a class="pill" href="#places">See it first <i>↗</i></a>
+  </div>
+</section>
+
+<section class="say">
+  <p class="big serif" id="words">Some places you read about. Mewar you have to stand inside.</p>
+  <div class="note">INTENT: The one idea of the site, lit word by word as you scroll. Keep it under 15 words.</div>
+</section>
+
+<section class="h-wrap" id="places">
+  <div class="h-head">
+    <h2 class="h2 serif">Go on. Look around.</h2>
+    <div class="note">INTENT: The hook, driven by scroll. One place name and one line of 8 words at most per photo. Tap opens that place's page.</div>
+  </div>
+  <div class="h-track" id="track">
+    <a class="panel a" href="#"><div class="pic"><img src="img/palace.jpg" alt="City Palace rising above Lake Pichola" loading="lazy"></div><h3 class="serif">Udaipur</h3><p>A palace that starts at the water.</p></a>
+    <a class="panel b" href="#"><div class="pic"><img src="img/pichwai.jpg" alt="Traditional pichwai painting" style="object-position:50% 12%" loading="lazy"></div><h3 class="serif">Nathdwara</h3><p>Your own photo belongs here first.</p></a>
+    <a class="panel c" href="#"><div class="pic"><img src="img/ranakpur.jpg" alt="Carved marble pillars at Ranakpur" loading="lazy"></div><h3 class="serif">Ranakpur</h3><p>Marble, carved until it looks like lace.</p></a>
+    <a class="panel b" href="#"><div class="pic"><img src="img/vijay.jpg" alt="Vijay Stambh at Chittorgarh Fort" loading="lazy"></div><h3 class="serif">Chittorgarh</h3><p>A tower of victory above the plain.</p></a>
+    <a class="panel a" href="#"><div class="pic"><img src="img/kumbhal.jpg" alt="Domed bastion on the walls of Kumbhalgarh" loading="lazy"></div><h3 class="serif">Kumbhalgarh</h3><p>Walls that keep going over the hills.</p></a>
+    <a class="panel c" href="#"><div class="pic"><img src="img/chetak.jpg" alt="Chetak Samadhi at Haldighati" loading="lazy"></div><h3 class="serif">Haldighati</h3><p>Where a legend lies at rest.</p></a>
+  </div>
+</section>
+
+<section class="moods">
+  <h2 class="h2 serif">What are you craving?</h2>
+  <div class="note">INTENT: Someone who has never heard of Mewar can still choose by mood. Hover a word on desktop: its photo follows your cursor.</div>
+  <ul id="moods">
+    <li><a href="#" data-i="0"><span class="w serif">Still water</span><small>Udaipur</small><div class="thumb"><img src="img/pichola.jpg" alt="" loading="lazy"></div></a></li>
+    <li><a href="#" data-i="1"><span class="w serif">Devotion</span><small>Nathdwara, Eklingji</small><div class="thumb"><img src="img/pichwai.jpg" alt="" loading="lazy"></div></a></li>
+    <li><a href="#" data-i="2"><span class="w serif">Stone and sky</span><small>Kumbhalgarh, Chittorgarh</small><div class="thumb"><img src="img/kumbhal.jpg" alt="" loading="lazy"></div></a></li>
+    <li><a href="#" data-i="3"><span class="w serif">Old stories</span><small>Haldighati</small><div class="thumb"><img src="img/chetak.jpg" alt="" loading="lazy"></div></a></li>
+  </ul>
+</section>
+
+<section class="zoom" id="zoom">
+  <div class="z z1"><img src="img/ranakpur.jpg" alt="" loading="lazy"></div>
+  <div class="z z2"><img src="img/vijay.jpg" alt="" loading="lazy"></div>
+  <div class="z z3"><img src="img/palace2.jpg" alt="" loading="lazy"></div>
+  <div class="z z4"><img src="img/chetak.jpg" alt="" loading="lazy"></div>
+  <div class="z z0" id="z0">
+    <img src="img/kumbhal.jpg" alt="Kumbhalgarh Fort under a storm sky" loading="lazy">
+    <div class="z0-cap" id="z0cap">
+      <p class="serif">One true fact, big enough to stop the scroll.</p>
+      <div class="note">INTENT: The scroll-stopper. Use one verified fact, for example the wall's length once confirmed with ASI or UNESCO.</div>
+    </div>
+  </div>
+</section>
+
+<section class="trips" id="trips">
+  <h2 class="h2 serif">How long do you have?</h2>
+  <article class="card">
+    <div class="tx"><div class="n serif">1</div><div><h3 class="serif">One day, one city</h3><p>A route title goes here. Detail lives on the next page.</p><div class="note">INTENT: Turn "that looks amazing" into "we could do this".</div></div></div>
+    <div><img src="img/palace.jpg" alt="City Palace, Udaipur" loading="lazy"></div>
+  </article>
+  <article class="card">
+    <div class="tx"><div class="n serif">3</div><div><h3 class="serif">Lakes, faith, legend</h3><p>Udaipur, Nathdwara and Haldighati, in the order that works.</p></div></div>
+    <div><img src="img/chetak.jpg" alt="Chetak Samadhi, Haldighati" loading="lazy"></div>
+  </article>
+  <article class="card">
+    <div class="tx"><div class="n serif">5</div><div><h3 class="serif">All of Mewar</h3><p>The forts, the marble, the long roads between them.</p></div></div>
+    <div><img src="img/kumbhal.jpg" alt="Kumbhalgarh Fort" loading="lazy"></div>
+  </article>
+</section>
+
+<section class="voices">
+  <h2 class="h2 serif">People who went.</h2>
+  <div class="note" style="margin-left:5vw">INTENT: Your collected reviews. These are placeholders: use only real quotes and photos, with permission.</div>
+  <div class="vtrack" id="vt">
+    <div class="v"><div class="ph"><img src="img/ranakpur.jpg" alt="" loading="lazy"></div><q>Their most vivid sentence goes here.</q><span>First name, city, travelled with family</span></div>
+    <div class="v"><div class="ph"><img src="img/pichola.jpg" alt="" loading="lazy"></div><q>What surprised them. A moment, not a rating.</q><span>First name, city, travelled as a couple</span></div>
+    <div class="v"><div class="ph"><img src="img/vijay.jpg" alt="" loading="lazy"></div><q>The tip they wish they had been given.</q><span>First name, city, travelled solo</span></div>
+    <div class="v"><div class="ph"><img src="img/kumbhal.jpg" alt="" loading="lazy"></div><q>The moment they still talk about.</q><span>First name, city, travelled with parents</span></div>
+  </div>
+</section>
+
+<section class="cta">
+  <p class="xl serif"><span class="line"><span>Who are you</span></span><span class="line"><span>bringing?</span></span></p>
+  <a class="pill" href="#">Send to the family group <i>↗</i></a>
+  <div class="note">INTENT: Trips get decided on WhatsApp, so the last action is sharing, not signing up.</div>
+</section>
+</main>
+<footer>Padharo Mewar is a placeholder name. Mockup photos from Wikimedia Commons: UnpetitproleX, Jakub Hałun, tommy, Suman Rao, Banerjeedebasis, Deepank Ranka, Ashwinushenoy (CC BY-SA); pichwai by an unknown Rajasthani artist (public domain).</footer>
+<div id="float" aria-hidden="true"><img src="img/pichola.jpg" alt=""><img src="img/pichwai.jpg" alt=""><img src="img/kumbhal.jpg" alt=""><img src="img/chetak.jpg" alt=""></div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+  var loader=document.getElementById('loader');
+  var noteBtn=document.getElementById('noteBtn');
+  noteBtn.addEventListener('click',function(){
+    var on=document.body.classList.toggle('notes');
+    noteBtn.setAttribute('aria-pressed',on);
+    if(window.ScrollTrigger)ScrollTrigger.refresh();
+  });
+  if(!window.gsap||!window.ScrollTrigger){loader.style.display='none';return;}
+  gsap.registerPlugin(ScrollTrigger);
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){loader.style.display='none';return;}
+
+  var lenis=null;
+  if(window.Lenis){
+    lenis=new Lenis({lerp:.09,smoothWheel:true});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(function(t){lenis.raf(t*1000)});
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      var id=a.getAttribute('href');
+      if(id.length>1)a.addEventListener('click',function(e){e.preventDefault();lenis.scrollTo(id)});
+      else a.addEventListener('click',function(e){e.preventDefault()});
+    });
+  }
+
+  /* Split the statement into words */
+  var w=document.getElementById('words');
+  w.innerHTML=w.textContent.split(' ').map(function(x){return '<span class="wd">'+x+'</span>'}).join(' ');
+
+  var mm=gsap.matchMedia();
+  mm.add({desk:'(min-width:769px)',mob:'(max-width:768px)'},function(ctx){
+    var desk=ctx.conditions.desk;
+
+    /* Intro */
+    var startScale=desk?.42:.56;
+    gsap.set('.arch',{scale:startScale});
+    gsap.set('.hero-end',{autoAlpha:0});
+    gsap.timeline()
+      .from('#loader span',{yPercent:40,autoAlpha:0,duration:.7,ease:'power3.out'})
+      .to('#loader',{yPercent:-100,duration:.9,ease:'expo.inOut'},'+=.25')
+      .set('#loader',{display:'none'})
+      .from('.arch',{yPercent:18,autoAlpha:0,duration:1.1,ease:'expo.out'},'-=.6')
+      .from('#tA',{xPercent:desk?-30:0,autoAlpha:0,duration:1.1,ease:'expo.out'},'<.1')
+      .from('#tB',{xPercent:desk?30:0,autoAlpha:0,duration:1.1,ease:'expo.out'},'<');
+
+    /* Hero: the window opens */
+    gsap.timeline({scrollTrigger:{trigger:'.hero',pin:true,start:'top top',end:'+=160%',scrub:1}})
+      .to('.arch',{scale:desk?1.75:2,ease:'power2.inOut',duration:1},0)
+      .fromTo('.arch img',{scale:1.25},{scale:1,ease:'none',duration:1},0)
+      .to('#tA',{xPercent:desk?-90:0,autoAlpha:0,ease:'power2.in',duration:.5},0)
+      .to('#tB',{xPercent:desk?90:0,autoAlpha:0,ease:'power2.in',duration:.5},0)
+      .to('.hero-end',{autoAlpha:1,duration:.25},.72);
+
+    /* Statement lights up word by word */
+    gsap.fromTo('.wd',{opacity:.22},{opacity:1,stagger:.1,ease:'none',scrollTrigger:{trigger:'.say',start:'top 65%',end:'bottom 75%',scrub:true}});
+
+    /* Horizontal gallery */
+    if(desk){
+      var track=document.getElementById('track');
+      var dist=function(){return track.scrollWidth-innerWidth};
+      var tween=gsap.to(track,{x:function(){return -dist()},ease:'none',scrollTrigger:{trigger:'.h-wrap',pin:true,start:'top top',end:function(){return '+='+dist()},scrub:1,invalidateOnRefresh:true}});
+      gsap.utils.toArray('.panel .pic img').forEach(function(img){
+        gsap.fromTo(img,{scale:1.22,xPercent:-7},{xPercent:7,ease:'none',scrollTrigger:{trigger:img.closest('.panel'),containerAnimation:tween,start:'left right',end:'right left',scrub:true}});
+      });
+    }
+
+    /* Photo follows the cursor over the mood words */
+    if(desk&&matchMedia('(hover:hover)').matches){
+      var f=document.getElementById('float'),imgs=f.querySelectorAll('img');
+      var fx=gsap.quickTo(f,'x',{duration:.6,ease:'power3'}),fy=gsap.quickTo(f,'y',{duration:.6,ease:'power3'});
+      document.querySelectorAll('#moods a').forEach(function(a){
+        a.addEventListener('mouseenter',function(){
+          imgs.forEach(function(m,i){m.classList.toggle('on',i==a.dataset.i)});
+          gsap.to(f,{autoAlpha:1,scale:1,duration:.4,ease:'power3.out',overwrite:'auto'});
+        });
+        a.addEventListener('mouseleave',function(){gsap.to(f,{autoAlpha:0,scale:.92,duration:.25,overwrite:'auto'})});
+        a.addEventListener('mousemove',function(e){fx(e.clientX+36);fy(e.clientY-210)});
+      });
+      gsap.set(f,{scale:.92,autoAlpha:0});
+    }
+    gsap.from('#moods li',{y:60,autoAlpha:0,stagger:.08,duration:1,ease:'expo.out',scrollTrigger:{trigger:'#moods',start:'top 80%',once:true}});
+
+    /* Zoom: collage parts, one photo takes the screen */
+    gsap.set('#z0cap',{autoAlpha:0});
+    gsap.timeline({scrollTrigger:{trigger:'#zoom',pin:true,start:'top top',end:'+=130%',scrub:1}})
+      .fromTo('#z0',{scale:desk?.34:.6},{scale:1,ease:'power2.inOut',duration:1},0)
+      .to('.z1',{xPercent:-130,yPercent:-40,ease:'power1.in',duration:.8},0)
+      .to('.z2',{xPercent:130,yPercent:-40,ease:'power1.in',duration:.8},0)
+      .to('.z3',{xPercent:-130,yPercent:40,ease:'power1.in',duration:.8},0)
+      .to('.z4',{xPercent:130,yPercent:40,ease:'power1.in',duration:.8},0)
+      .to('#z0cap',{autoAlpha:1,duration:.2},.85);
+
+    /* Cards settle back as the next one covers them */
+    var cards=gsap.utils.toArray('.card');
+    cards.forEach(function(c,i){
+      if(i<cards.length-1)gsap.to(c,{scale:.93,ease:'none',scrollTrigger:{trigger:cards[i+1],start:'top bottom',end:'top 12%',scrub:true}});
+    });
+
+    /* Voices drift, faster as you scroll */
+    var vt=document.getElementById('vt');
+    if(!vt.dataset.cloned){vt.innerHTML+=vt.innerHTML;vt.dataset.cloned=1;}
+    var drift=gsap.to(vt,{xPercent:-50,ease:'none',duration:46,repeat:-1});
+    ScrollTrigger.create({trigger:'.voices',start:'top bottom',end:'bottom top',
+      onToggle:function(s){s.isActive?drift.play():drift.pause()},
+      onUpdate:function(s){
+        var v=gsap.utils.clamp(1,6,1+Math.abs(s.getVelocity())/500);
+        gsap.to(drift,{timeScale:v,duration:.2,overwrite:true});
+        gsap.to(drift,{timeScale:1,duration:1,delay:.2});
+      }});
+
+    /* Closing words rise out of a mask */
+    gsap.from('.cta .line>span',{yPercent:105,stagger:.1,duration:1.2,ease:'expo.out',scrollTrigger:{trigger:'.cta',start:'top 72%',once:true}});
+  });
+  addEventListener('load',function(){ScrollTrigger.refresh()});
+})();
+</script>
+</body>
+</html>
